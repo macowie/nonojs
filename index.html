@@ -1,41 +1,25 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 <html>
-<head>
-<script src="nono.js" type="application/javascript"></script>
-<style type="text/css">
-table, th, td
-{
-border-collapse:collapse;
-padding: 3px;
-border: 1px solid black;
-}
-
-.rowInfo{
-    text-align: right;
-
-    }
-
-.colInfo{
-vertical-align: bottom;
-}
-
-</style>
-<title>Nono</title>
-</head>
-
-
-<body onload="main();">
-
-   <h1>Nono</h1>
-   <h2 id="titlefield"></h2>
-   <h3 id="authorfield"></h2>
-   <div id="puzzlefield">
-
-   </div>
-
-
-
-
-</body>
+    
+    <head>
+        <script src="nono.js" type="application/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <title>Nono - Web Nonograms</title>
+    </head>
+    
+    <body onload="play();">
+        <div id="content">
+            <h1>Nono</h1>
+            <a href="create.html">Create Your Own</a>
+            <h2 id="titlefield"></h2>
+            <h3 id="authorfield">
+                </h2>
+                <div id="status" class="statusblank"></div>
+                <div id="puzzlefield"></div>
+        <p><a href="mailto:matthew@cowie.me">I</a> wrote this. I hope it didn't break.</p>
+        </div>
+        
+        
+    </body>
 
 </html>

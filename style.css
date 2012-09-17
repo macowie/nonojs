@@ -1,0 +1,100 @@
+body {
+    background-color: #1d6700;
+    padding: -10px;
+}
+table, th, td {
+    border-collapse:collapse;
+    padding: 3px;
+    border: 1px solid black;
+    margin: auto;
+    text-align: center;
+}
+td {
+    width: 30px;
+    height: 30px;
+}
+.rowInfo {
+    text-align: right;
+}
+.colInfo {
+    vertical-align: bottom;
+}
+.marked {
+    background-color: #1c1c1c;
+}
+.empty {
+    background-color: #ddd;
+}
+.anti {
+    background-color: #fff;
+}
+.statusgood {
+    border-color: #1d6700;
+    background-color: #C1FFA8;
+}
+.statusbad {
+    border-color: #670000;
+    background-color: #FFA8A8;
+}
+.statusblank {
+    border-color: #fff;
+    background-color: #fff;
+}
+#status {
+    width: 75%;
+    border-width: 3px;
+    border-style: solid;
+    margin: auto;
+    padding: 5px;
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+#content {
+    width: 98%;
+    max-width: 650px;
+    min-height: 95%;
+    background-color: #fff;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
+}
+#puzzlefield {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+}
+#infoinputs {
+    position: relative;
+    text-align: right;
+    width: 60%;
+    margin-left:auto;
+    margin-right:auto;
+}
+input, select, textarea {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+input {
+    width: 220px;
+}
+select {
+    margin: 10px;
+}
+label {
+    text-align: right;
+}
+list{
+list-style-type: none;
+    
+    }
+li{
+    background-color: #eee;
+    margin: 5px;  
+    padding: 5px;
+  
+    
+}
+
+    }
