@@ -11,15 +11,38 @@
         <div id="content">
             <h1>Nono</h1>
             <a href="create.html">Create Your Own</a>
+            <a href="javascript:showInstructions();">Instructions</a>
+            <p>
+                <div id="instructions">
+                    <p><a href="javascript:hideInstructions();">Hide</a></p>
+                    <p>Nonograms is a puzzle game where you try to fill in squares on a grid
+                        to discover the hidden picture. The number of blocks in a given row or
+                        column are displays and the player is to deduce which squares are supposed
+                        to be filled in. For instance, if a row lists "3 2 3" next to it, that
+                        row somewhere contains 3 blocks, a separation of at least one block, two
+                        blocks, another separation, and another three block stretch. The history,
+                        techniques, and more information is available at
+                        <a href="http://en.wikipedia.org/wiki/Nonogram">Wikipedia</a>
+                    </p>
+                </div>
+            </p>
             <h2 id="titlefield"></h2>
             <h3 id="authorfield">
                 </h2>
                 <div id="status" class="statusblank"></div>
                 <div id="puzzlefield"></div>
-        <p><a href="mailto:matthew@cowie.me">I</a> wrote this. I hope it didn't break.</p>
+                <div id="footer">
+                    <table>
+                        <tr>
+                            <td class="marked">Marked</td>
+                            <td class="empty">Default</td>
+                            <td class="anti">Blank</td>
+                        </tr>
+                    </table>
+                    <p>
+                        <a href="mailto:matthew@cowie.me">I</a> wrote this. I hope it didn't break.</p>
+                </div>
         </div>
-        
-        
     </body>
 
 </html>
