@@ -1,0 +1,77 @@
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<html>
+    
+    <head>
+        <script src="nono.js" type="application/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <title>Nono</title>
+    </head>
+    
+    <body onload="create();">
+        <div id="content"> 
+        <img src="nonologo.png" alt"Nono!">
+            <h1>Create Mode</h1>
+            <div id="infoinputs">
+                <list><li>
+                    <label for="title">Puzzle Title:</label>
+                    <input type="text" maxlength=30 id="title" name="title">
+                </li>
+                <li>
+                    <label for="author">Author Name:</label>
+                    <input type="text" maxlength=30 id="author" name="author">
+                </li>
+                <li>
+                    <label for="answer">Puzzle Answer:</label>
+                    <input type="text" maxlength=30 id="answer" name="answer">
+                </li>
+                <li>
+                    <label for="width">Width</label>
+                    <select name="width" id="width" onchange="drawTableCreate();">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                    </select>
+                    <label for="height">Height</label>
+                    <select name="height" id="height" onchange="drawTableCreate();">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                    </select>
+                    <a href="javascript:generateLink();">Generate Link</a>
+                </li></list>
+            </div>
+            <div id="status" class="statusblank"></div>
+            <div id="puzzlefield"></div>
+                       <div id="footer">
+            
+                    <p>
+                        <a href="mailto:matthew@cowie.me">I</a> wrote this. I hope it didn't break.</p>
+                </div>
+        </div>
+    </body>
+
+</html>

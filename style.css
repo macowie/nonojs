@@ -5,14 +5,22 @@ body {
 table, th, td {
     border-collapse:collapse;
     padding: 3px;
-    border: 1px solid black;
+    
     margin: auto;
     text-align: center;
+    
 }
+table{
+    
+    }
 td {
+    border: 1px solid black;
     width: 30px;
     height: 30px;
 }
+#topleft{
+    border-style:none;
+    }
 
 #instructions{
     display:none;
@@ -24,13 +32,18 @@ td {
     position: relative;
     border-color: #00065C;
     background-color: #BABFFF;
+    text-align: left;
     
     }
 .rowInfo {
     text-align: right;
+    white-space: nowrap;
+    border-style: none;
 }
 .colInfo {
     vertical-align: bottom;
+        border-style: none;
+
 }
 .marked {
     background-color: #1c1c1c;
@@ -67,7 +80,7 @@ td {
 #content {
     width: 98%;
     max-width: 650px;
-    min-height: 95%;
+    min-height: 90%;
     background-color: #fff;
     text-align: center;
     margin-left: auto;
@@ -85,6 +98,13 @@ td {
     width: 60%;
     margin-left:auto;
     margin-right:auto;
+}
+#footer{
+margin-top: 15px;
+ bottom:25px;
+ left: auto;
+ right: auto;
+    
 }
 input, select, textarea {
     margin-top: 2px;
