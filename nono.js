@@ -1,15 +1,16 @@
 var myPuzzle;
 
 function play() {
-    if (getUrlVars()['p'] !== null)
-    {
-        myPuzzle = getDataFromUrl();
+
+    var data = getUrlVars()['p'];
+    if (data == null) {//if no puzzle data found, pick  a pregenerated one at random
+
+        var sampler = ["Rmx5IFRvZ2V0aGVyLEEgbWlnaHTEgmR1Y2ssTWF0xIhldyw4LDEwLMSkxKbEosSoxKfEpzHEqcSoxKzEq8SuxLHEr8SlxLTEsMSzxKrEtcSyxK3EtsS5xKTEt8SxxL7FgMS5xKzFhMS7xL3EtMS/xLjFhcS3", "S2Fma2EsQSBCdWcsTWF0dGhldywxMMSTxJXElyzElTHEmcScxJvEmMSfxJzEmsSTxKHEpMSYxJ7Eo8SnxKfEoMSbxKzEqMSjxKDEq8SvxKXEpMStxLXEssSwxJ3Et8SzxKLEtsStxLjEqcSyxKrEu8WDxJc=", "RGlhbCBJdCxNxIdhdHRoZXcsNSw2LDEsMMSWxJjElcSaxJnElMSdxJfElcSfxJ7EosSbxJfEpcSdxKDEmMSf", "RWthbnMsU25ha2UsTWF0dGhldywxMSw2LDDEmMSaxJnElcSZxJ7Em8SgxJ/ElcSjxKHEoMSdxJPEqMScxKnEq8SqxKTEn8StxKjEp8SqxK/EpsSxxKXEtMS0xLI="];
+        var x = Math.floor(Math.random() * (sampler.length));
+        data = sampler[x];
     }
-    else{
-      myPuzzle = readPuzzle(sampleEncPuzzle());   
-    }
-    
-    
+
+    myPuzzle = decodePuzzle(data);
     drawTable(myPuzzle);
 }
 
@@ -28,14 +29,14 @@ function arraysEqual(arr1, arr2) { //Steps through and tests if the arrays match
 
 function Puzzle(indata) { //Puzzle object
     var puzzle = new Object();
-    puzzle.title = indata[0]; 
+    puzzle.title = indata[0];
     puzzle.answer = indata[1]; //String to be revealed after the puzzle is solved
     puzzle.author = indata[2];
     puzzle.width = parseInt(indata[3]);
     puzzle.height = parseInt(indata[4]);
     puzzle.data = new Array(indata.length - 5); //Actual puzzle data
-    puzzle.player = new Array(puzzle.data.length);//What the player has marked
-    var i = 5;  //Offset the array index to account for previous entries
+    puzzle.player = new Array(puzzle.data.length); //What the player has marked
+    var i = 5; //Offset the array index to account for previous entries
     for (var x = 0; x < puzzle.data.length; x++) {
         puzzle.data[x] = parseInt(indata[i]);
         puzzle.player[x] = 0; //Fill in the player array with blanks while stepping through to read the data
@@ -53,7 +54,7 @@ function getUrlVars() { //Function to return data passed in from URL
     return vars;
 }
 
-function readPuzzle(dec_data) {//Takes decoded data, returns puzzle object if valid
+function readPuzzle(dec_data) { //Takes decoded data, returns puzzle object if valid
     if (dec_data != undefined) {
         var tempArr = dec_data.split(',');
 
@@ -67,19 +68,13 @@ function readPuzzle(dec_data) {//Takes decoded data, returns puzzle object if va
 
 
 
-function getDataFromUrl() { //Grabs the data from URL, returns puzzle object via readPuzzle()
-    var a = decodePuzzle(getUrlVars()['p']);
-    return readPuzzle(a);
-
-}
-
-function decodePuzzle(enc_data) { //Returns decoded string
+function decodePuzzle(enc_data) { //Decodes data string, returns puzzle object
     var temp = lzw_decode(Base64.decode(enc_data));
-    
-    return temp;
+
+    return readPuzzle(temp);
 }
 
-function encodePuzzle(puzzle) {//Takes puzzle object, returns encoded string
+function encodePuzzle(puzzle) { //Takes puzzle object, returns encoded string
     var c = puzzle.title + ',' + puzzle.answer + ',' + puzzle.author + ',' + puzzle.width + ',' + puzzle.height + ',' + puzzle.data.toString();
     var temp = Base64.encode(lzw_encode(c));
     return temp;
@@ -111,7 +106,7 @@ function calcColInfo(puzzle) { //Generate the hint numbers for each column of da
 
 
             }
-            if (t !== 0) { 
+            if (t !== 0) {
                 cur += t + ' '; //If a block of data was true, add it to the string
 
             }
@@ -119,7 +114,7 @@ function calcColInfo(puzzle) { //Generate the hint numbers for each column of da
 
         }
 
-        if (cur === '') {// If no data found for that column, set the string to 0
+        if (cur === '') { // If no data found for that column, set the string to 0
             cur = '0';
         }
 
@@ -134,9 +129,9 @@ function calcRowInfo(puzzle) { ///Generate the hint numbers for each row of data
     var rowInfos = new Array(puzzle.height);
     var t = 0;
     var cur = '';
-    
+
     for (var c = 0; c < puzzle.height; c++) { //For each row
-        for (var e = 0; e < puzzle.width; e++) {//For each item in a row
+        for (var e = 0; e < puzzle.width; e++) { //For each item in a row
             t = 0;
             while (puzzle.data[(c * puzzle.width) + e] != '0' && e < puzzle.width) { //Increase count while stepping through if data found
                 t++;
@@ -180,8 +175,8 @@ function tileClick(cell_num) { //Actions to take when player interacts with puzz
             cell.setAttribute('class', 'empty');
             window.myPuzzle.player[cell_num] = 0;
         }
-        if (winTest()) {//Check if the player has finished
-            playerWin(); 
+        if (winTest()) { //Check if the player has finished
+            playerWin();
 
         }
 
@@ -209,7 +204,7 @@ function tileClickCreate(cell_num) { //Action to take in create mode
 
 }
 
-function generateLink() {//Generate the link when player is finished in create mode
+function generateLink() { //Generate the link when player is finished in create mode
     //Grab the data from the inputs
     var widthForm = document.getElementById("width");
     myPuzzle.width = parseInt(widthForm.options[widthForm.selectedIndex].value);
@@ -232,19 +227,19 @@ function generateLink() {//Generate the link when player is finished in create m
     var st = document.getElementById('status');
     st.setAttribute('class', 'statusgood');
     st.innerHTML = "<input type=text value=" + link + ">"; //Put the link in an input box to avoid overflow
-    
-    
+
+
 
 
 }
 
-function winTest() {//Test if the player's data matches the puzzle data
+function winTest() { //Test if the player's data matches the puzzle data
 
     return arraysEqual(window.myPuzzle.data, window.myPuzzle.player);
 
 }
 
-function playerWin() {//Actions to do when the player has solved
+function playerWin() { //Actions to do when the player has solved
     myPuzzle.solved = true; //Set solved to true so the puzzle is inactive
     var st = document.getElementById('status');
     st.setAttribute('class', 'statusgood'); // Set the status area to positive style
@@ -261,7 +256,7 @@ function drawTable(puzzle) { // Set up the page and table from the puzzle data
     temp = document.getElementById('authorfield');
     temp.appendChild(document.createTextNode('by ' + puzzle.author));
 
-    
+
     var cellcount = 0;
 
     var row = new Array();
@@ -269,7 +264,7 @@ function drawTable(puzzle) { // Set up the page and table from the puzzle data
 
     var row_num = puzzle.height;
     var cell_num = puzzle.width;
-    
+
     //Start the table element
     var tab = document.createElement('table');
     tab.setAttribute('id', 'puzzletable');
@@ -277,17 +272,17 @@ function drawTable(puzzle) { // Set up the page and table from the puzzle data
     var colInfos = calcColInfo(puzzle); //Get the column hint data
     var rowInfos = calcRowInfo(puzzle); //Get the row hint data
 
-    var colInfo = document.createElement('tr'); 
+    var colInfo = document.createElement('tr');
     var topleft = document.createElement('td');
-    topleft.setAttribute('id','topleft');
+    topleft.setAttribute('id', 'topleft');
     colInfo.appendChild(topleft); //Skip the top left cell
-    
+
     for (var c = 0; c < cell_num; c++) { //Generate the top row with column hint data
         cell[c] = document.createElement('td');
         cell[c].setAttribute('class', 'colInfo'); //Set the class for styling
-        cell[c].setAttribute('id', 'col' + c);  //Set unique ID
+        cell[c].setAttribute('id', 'col' + c); //Set unique ID
         singleInfo = colInfos[c].split(' '); //Split the column hint data so line breaks can be inserted
-        for (var s = 0; s < singleInfo.length; s++) {//Step through and insert the breaks
+        for (var s = 0; s < singleInfo.length; s++) { //Step through and insert the breaks
             cell[c].appendChild(document.createTextNode(singleInfo[s]));
             cell[c].appendChild(document.createElement('br'));
         }
@@ -301,7 +296,7 @@ function drawTable(puzzle) { // Set up the page and table from the puzzle data
     var cont;
 
 
-    for (c = 0; c < row_num; c++) {//For each row
+    for (c = 0; c < row_num; c++) { //For each row
         row[c] = document.createElement('tr'); //Create row
         rowInfo = document.createElement('td');
         rowInfo.setAttribute('id', 'row' + c);
@@ -310,7 +305,7 @@ function drawTable(puzzle) { // Set up the page and table from the puzzle data
         row[c].appendChild(rowInfo); //and append the row's hint data
 
 
-        for (var k = 0; k < cell_num; k++) {//Then for each puzzle cell in the row add a cell
+        for (var k = 0; k < cell_num; k++) { //Then for each puzzle cell in the row add a cell
             cell[k] = document.createElement('td');
             cont = document.createTextNode(puzzle.data[cellcount]);
             cell[k].setAttribute('id', 'puzz' + cellcount); //set unique id
@@ -331,7 +326,7 @@ function drawTable(puzzle) { // Set up the page and table from the puzzle data
 
 
 
-function drawTableCreate() {//Draw the table in create mode
+function drawTableCreate() { //Draw the table in create mode
 
     //Get the width and height
     var cellcount = 0;
@@ -339,8 +334,8 @@ function drawTableCreate() {//Draw the table in create mode
     var width = parseInt(widthForm.options[widthForm.selectedIndex].value);
     var heightForm = document.getElementById("height");
     var height = parseInt(heightForm.options[heightForm.selectedIndex].value);
-    
-    
+
+
     //Create a new array based on the w*h and fill it will zeroes to match blank table
     myPuzzle.data = new Array(width * height);
     for (var x = 0; x < myPuzzle.data.length; x++) {
@@ -390,13 +385,13 @@ function drawTableCreate() {//Draw the table in create mode
 
 
 
-function showInstructions(){
+function showInstructions() {
     var inst = document.getElementById('instructions');
     inst.style.display = 'block';
 
 }
 
-function hideInstructions(){
+function hideInstructions() {
     var inst = document.getElementById('instructions');
     inst.style.display = 'none';
 }
@@ -407,194 +402,193 @@ function hideInstructions(){
 
 
 var Base64 = {
-// private property
-_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+    // private property
+    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
 
-// public method for encoding
-encode : function (input) {
-    var output = "";
-    var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-    var i = 0;
+    // public method for encoding
+    encode: function(input) {
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
 
-    input = Base64._utf8_encode(input);
+        input = Base64._utf8_encode(input);
 
-    while (i < input.length) {
+        while (i < input.length) {
 
-        chr1 = input.charCodeAt(i++);
-        chr2 = input.charCodeAt(i++);
-        chr3 = input.charCodeAt(i++);
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
 
-        enc1 = chr1 >> 2;
-        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-        enc4 = chr3 & 63;
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
 
-        if (isNaN(chr2)) {
-            enc3 = enc4 = 64;
-        } else if (isNaN(chr3)) {
-            enc4 = 64;
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            }
+            else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+
+            output = output + Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) + Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
+
         }
 
-        output = output +
-        Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
-        Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
+        return output;
+    },
 
+    // public method for decoding
+    decode: function(input) {
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+        while (i < input.length) {
+
+            enc1 = Base64._keyStr.indexOf(input.charAt(i++));
+            enc2 = Base64._keyStr.indexOf(input.charAt(i++));
+            enc3 = Base64._keyStr.indexOf(input.charAt(i++));
+            enc4 = Base64._keyStr.indexOf(input.charAt(i++));
+
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+
+            output = output + String.fromCharCode(chr1);
+
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+
+        }
+
+        output = Base64._utf8_decode(output);
+
+        return output;
+
+    },
+
+    // private method for UTF-8 encoding
+    _utf8_encode: function(string) {
+        string = string.replace(/\r\n/g, "\n");
+        var utftext = "";
+
+        for (var n = 0; n < string.length; n++) {
+
+            var c = string.charCodeAt(n);
+
+            if (c < 128) {
+                utftext += String.fromCharCode(c);
+            }
+            else if ((c > 127) && (c < 2048)) {
+                utftext += String.fromCharCode((c >> 6) | 192);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+            else {
+                utftext += String.fromCharCode((c >> 12) | 224);
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+
+        }
+
+        return utftext;
+    },
+
+    // private method for UTF-8 decoding
+    _utf8_decode: function(utftext) {
+        var string = "";
+        var i = 0;
+        var c = c1 = c2 = 0;
+
+        while (i < utftext.length) {
+
+            c = utftext.charCodeAt(i);
+
+            if (c < 128) {
+                string += String.fromCharCode(c);
+                i++;
+            }
+            else if ((c > 191) && (c < 224)) {
+                c2 = utftext.charCodeAt(i + 1);
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                i += 2;
+            }
+            else {
+                c2 = utftext.charCodeAt(i + 1);
+                c3 = utftext.charCodeAt(i + 2);
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                i += 3;
+            }
+
+        }
+        return string;
     }
-
-    return output;
-},
-
-// public method for decoding
-decode : function (input) {
-    var output = "";
-    var chr1, chr2, chr3;
-    var enc1, enc2, enc3, enc4;
-    var i = 0;
-
-    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-    while (i < input.length) {
-
-        enc1 = Base64._keyStr.indexOf(input.charAt(i++));
-        enc2 = Base64._keyStr.indexOf(input.charAt(i++));
-        enc3 = Base64._keyStr.indexOf(input.charAt(i++));
-        enc4 = Base64._keyStr.indexOf(input.charAt(i++));
-
-        chr1 = (enc1 << 2) | (enc2 >> 4);
-        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-        chr3 = ((enc3 & 3) << 6) | enc4;
-
-        output = output + String.fromCharCode(chr1);
-
-        if (enc3 != 64) {
-            output = output + String.fromCharCode(chr2);
-        }
-        if (enc4 != 64) {
-            output = output + String.fromCharCode(chr3);
-        }
-
-    }
-
-    output = Base64._utf8_decode(output);
-
-    return output;
-
-},
-
-// private method for UTF-8 encoding
-_utf8_encode : function (string) {
-    string = string.replace(/\r\n/g,"\n");
-    var utftext = "";
-
-    for (var n = 0; n < string.length; n++) {
-
-        var c = string.charCodeAt(n);
-
-        if (c < 128) {
-            utftext += String.fromCharCode(c);
-        }
-        else if((c > 127) && (c < 2048)) {
-            utftext += String.fromCharCode((c >> 6) | 192);
-            utftext += String.fromCharCode((c & 63) | 128);
-        }
-        else {
-            utftext += String.fromCharCode((c >> 12) | 224);
-            utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-            utftext += String.fromCharCode((c & 63) | 128);
-        }
-
-    }
-
-    return utftext;
-},
-
-// private method for UTF-8 decoding
-_utf8_decode : function (utftext) {
-    var string = "";
-    var i = 0;
-    var c = c1 = c2 = 0;
-
-    while ( i < utftext.length ) {
-
-        c = utftext.charCodeAt(i);
-
-        if (c < 128) {
-            string += String.fromCharCode(c);
-            i++;
-        }
-        else if((c > 191) && (c < 224)) {
-            c2 = utftext.charCodeAt(i+1);
-            string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-            i += 2;
-        }
-        else {
-            c2 = utftext.charCodeAt(i+1);
-            c3 = utftext.charCodeAt(i+2);
-            string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-            i += 3;
-        }
-
-    }
-    return string;
-}
 }
 
 // LZW-compress a string
-function lzw_encode(s) {
-    var d = new Date();
+    function lzw_encode(s) {
+        var d = new Date();
 
-    var dict = {};
-    var data = (s + "").split("");
-    var out = [];
-    var currChar;
-    var phrase = data[0];
-    var code = 256;
-    for (var i = 1; i < data.length; i++) {
-        currChar = data[i];
-        if (dict[phrase + currChar] != null) {
-            phrase += currChar;
+        var dict = {};
+        var data = (s + "").split("");
+        var out = [];
+        var currChar;
+        var phrase = data[0];
+        var code = 256;
+        for (var i = 1; i < data.length; i++) {
+            currChar = data[i];
+            if (dict[phrase + currChar] != null) {
+                phrase += currChar;
+            }
+            else {
+                out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+                dict[phrase + currChar] = code;
+                code++;
+                phrase = currChar;
+            }
         }
-        else {
-            out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-            dict[phrase + currChar] = code;
+        out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+        for (var i = 0; i < out.length; i++) {
+            out[i] = String.fromCharCode(out[i]);
+        }
+
+        var retrunedresult = out.join("");
+        console.log("Input: " + s.length / 1024 + "kb Output:" + retrunedresult.length / 1024 + "kb Rate: " + (s.length / retrunedresult.length));
+        console.log((new Date()).getTime() - d.getTime() + ' ms.');
+        return retrunedresult;
+    }
+
+    // Decompress an LZW-encoded string
+
+    function lzw_decode(s) {
+        var dict = {};
+        var data = (s + "").split("");
+        var currChar = data[0];
+        var oldPhrase = currChar;
+        var out = [currChar];
+        var code = 256;
+        var phrase;
+        for (var i = 1; i < data.length; i++) {
+            var currCode = data[i].charCodeAt(0);
+            if (currCode < 256) {
+                phrase = data[i];
+            }
+            else {
+                phrase = dict[currCode] ? dict[currCode] : (oldPhrase + currChar);
+            }
+            out.push(phrase);
+            currChar = phrase.charAt(0);
+            dict[code] = oldPhrase + currChar;
             code++;
-            phrase = currChar;
+            oldPhrase = phrase;
         }
+        return out.join("");
     }
-    out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-    for (var i = 0; i < out.length; i++) {
-        out[i] = String.fromCharCode(out[i]);
-    }
-
-    var retrunedresult = out.join("");
-    console.log("Input: " + s.length / 1024 + "kb Output:" + retrunedresult.length / 1024 + "kb Rate: " + (s.length / retrunedresult.length));
-    console.log((new Date()).getTime() - d.getTime() + ' ms.');
-    return retrunedresult;
-}
-
-// Decompress an LZW-encoded string
-
-function lzw_decode(s) {
-    var dict = {};
-    var data = (s + "").split("");
-    var currChar = data[0];
-    var oldPhrase = currChar;
-    var out = [currChar];
-    var code = 256;
-    var phrase;
-    for (var i = 1; i < data.length; i++) {
-        var currCode = data[i].charCodeAt(0);
-        if (currCode < 256) {
-            phrase = data[i];
-        }
-        else {
-            phrase = dict[currCode] ? dict[currCode] : (oldPhrase + currChar);
-        }
-        out.push(phrase);
-        currChar = phrase.charAt(0);
-        dict[code] = oldPhrase + currChar;
-        code++;
-        oldPhrase = phrase;
-    }
-    return out.join("");
-}
